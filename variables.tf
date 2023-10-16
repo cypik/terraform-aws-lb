@@ -153,8 +153,10 @@ variable "vpc_id" {
 
 variable "target_id" {
   type        = list(any)
+  default     = null
   description = "The ID of the target. This is the Instance ID for an instance, or the container ID for an ECS container. If the target type is ip, specify an IP address."
 }
+
 
 variable "idle_timeout" {
   type        = number
