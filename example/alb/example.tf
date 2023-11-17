@@ -68,7 +68,7 @@ module "ec2" {
   vpc_id                      = module.vpc.id
   ssh_allowed_ip              = ["0.0.0.0/0"]
   ssh_allowed_ports           = [22]
-  public_key                  ="AZjA6mtjK/BTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXcoU0ElzHYU= satish@satish"
+  public_key                  = "AZjA6mtjK/BTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXcoU0ElzHYU= satish@satish"
   instance_count              = 1
   ami                         = "ami-053b0d53c279acc90"
   instance_type               = "t2.nano"
