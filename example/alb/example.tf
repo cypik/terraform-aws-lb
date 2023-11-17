@@ -79,7 +79,7 @@ module "ec2" {
   assign_eip_address          = false
   associate_public_ip_address = true
   instance_profile_enabled    = true
-  ebs_optimized               = false
+  ebs_optimized               = true
   ebs_volume_enabled          = true
   ebs_volume_type             = "gp2"
   ebs_volume_size             = 30
