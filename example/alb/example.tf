@@ -8,7 +8,7 @@ locals {
 }
 
 module "vpc" {
-  source      = "git::https://github.com/opz0/terraform-aws-vpc.git?ref=v1.0.0"
+  source      = "git::https://github.com/cypik/terraform-aws-vpc.git?ref=v1.0.0"
   name        = local.name
   environment = local.environment
   cidr_block  = "172.16.0.0/16"
@@ -16,7 +16,7 @@ module "vpc" {
 
 
 module "subnet" {
-  source = "git::https://github.com/opz0/terraform-aws-subnet.git?ref=v1.0.0"
+  source = "git::https://github.com/cypik/terraform-aws-subnet.git?ref=v1.0.0"
 
   name               = local.name
   environment        = local.environment
@@ -29,7 +29,7 @@ module "subnet" {
 }
 
 module "iam-role" {
-  source             = "git::https://github.com/opz0/terraform-aws-iam-role.git?ref=v1.0.0"
+  source             = "git::https://github.com/cypik/terraform-aws-iam-role.git?ref=v1.0.0"
   name               = local.name
   environment        = local.environment
   assume_role_policy = data.aws_iam_policy_document.default.json
@@ -62,15 +62,15 @@ data "aws_iam_policy_document" "iam-policy" {
 }
 
 module "ec2" {
-  source                      = "git::https://github.com/opz0/terraform-aws-ec2.git?ref=v1.0.0"
-  name                        = "albp"
+  source                      = "git::https://github.com/cypik/terraform-aws-ec2.git?ref=v1.0.0"
+  name                        = "alb"
   environment                 = local.environment
   vpc_id                      = module.vpc.id
   ssh_allowed_ip              = ["0.0.0.0/0"]
   ssh_allowed_ports           = [22]
   public_key                  = "AZjA6mtjK/BTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXcoU0ElzHYU= satish@satish"
   instance_count              = 1
-  ami                         = "ami-053b0d53c279acc90"
+  ami                         = "ami-0fc5d935ebf8bc3bc"
   instance_type               = "t2.nano"
   monitoring                  = true
   tenancy                     = "default"
@@ -79,7 +79,7 @@ module "ec2" {
   assign_eip_address          = false
   associate_public_ip_address = true
   instance_profile_enabled    = true
-  ebs_optimized               = true
+  ebs_optimized               = false
   ebs_volume_enabled          = true
   ebs_volume_type             = "gp2"
   ebs_volume_size             = 30

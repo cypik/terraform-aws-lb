@@ -18,7 +18,7 @@ To use this module, you can include it in your Terraform configuration. Here's a
 
 ```hcl
 module "alb" {
-  source = "git::https://github.com/opz0/terraform-aws-lb.git?ref=v1.0.0"
+  source                     = "git::https://github.com/cypik/terraform-aws-lb.git?ref=v1.0.0"
   name                       = local.name
   enable                     = true
   internal                   = true
@@ -86,7 +86,7 @@ module "alb" {
 
 ```hcl
 module "clb" {
-  source = "git::https://github.com/opz0/terraform-aws-lb.git?ref=v1.0.0"
+  source             = "git::https://github.com/cypik/terraform-aws-lb.git?ref=v1.0.0"
   name               = "app"
   load_balancer_type = "classic"
   clb_enable         = true
@@ -122,7 +122,7 @@ module "clb" {
 
 ```hcl
 module "nlb" {
-  source = "git::https://github.com/opz0/terraform-aws-lb.git?ref=v1.0.0"
+  source                     = "git::https://github.com/cypik/terraform-aws-lb.git?ref=v1.0.0"
   name                       = "app"
   enable                     = true
   internal                   = false
@@ -191,10 +191,10 @@ For security group settings, you can configure the ingress and egress rules usin
 - Other relevant security group outputs (modify as needed).
 
 ## Example
-For detailed examples on how to use this module, please refer to the 'example' directory within this repository.
+For detailed examples on how to use this module, please refer to the '[example](https://github.com/cypik/terraform-aws-lb/tree/master/example)' directory within this repository.
 
 ## Author
 Your Name Replace '[License Name]' and '[Your Name]' with the appropriate license and your information. Feel free to expand this README with additional details or usage instructions as needed for your specific use case.
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE](https://github.com/opz0/terraform-aws-lb/blob/master/LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](https://github.com/cypik/terraform-aws-lb/blob/master/LICENSE) file for details.

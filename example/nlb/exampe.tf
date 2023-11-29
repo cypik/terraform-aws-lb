@@ -8,14 +8,14 @@ locals {
 }
 
 module "vpc" {
-  source      = "git::https://github.com/opz0/terraform-aws-vpc.git?ref=v1.0.0"
+  source      = "git::https://github.com/cypik/terraform-aws-vpc.git?ref=v1.0.0"
   name        = local.name
   environment = local.environment
   cidr_block  = "172.16.0.0/16"
 }
 
 module "public_subnets" {
-  source             = "git::https://github.com/opz0/terraform-aws-subnet.git?ref=v1.0.0"
+  source             = "git::https://github.com/cypik/terraform-aws-subnet.git?ref=v1.0.0"
   name               = local.name
   environment        = local.environment
   availability_zones = ["us-east-1b", "us-east-1c"]
@@ -28,7 +28,7 @@ module "public_subnets" {
 
 
 module "iam-role" {
-  source             = "git::https://github.com/opz0/terraform-aws-iam-role.git?ref=v1.0.0"
+  source             = "git::https://github.com/cypik/terraform-aws-iam-role.git?ref=v1.0.0"
   name               = local.name
   environment        = local.environment
   assume_role_policy = data.aws_iam_policy_document.default.json
@@ -62,7 +62,7 @@ data "aws_iam_policy_document" "iam-policy" {
 }
 
 module "ec2" {
-  source                      = "git::https://github.com/opz0/terraform-aws-ec2.git?ref=v1.0.0"
+  source                      = "git::https://github.com/cypik/terraform-aws-ec2.git?ref=v1.0.0"
   name                        = local.name
   environment                 = local.environment
   instance_count              = 1
