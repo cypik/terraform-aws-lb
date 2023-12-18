@@ -17,7 +17,6 @@ module "vpc" {
 
 module "subnet" {
   source = "git::https://github.com/cypik/terraform-aws-subnet.git?ref=v1.0.0"
-
   name               = local.name
   environment        = local.environment
   availability_zones = ["us-east-1b", "us-east-1c"]
