@@ -8,19 +8,19 @@ locals {
 }
 
 module "vpc" {
-  source      = "git::git@github.com:opz0/terraform-aws-vpc.git?ref=master"
+  source      = "git::https://github.com/opz0/terraform-aws-vpc.git?ref=v1.0.0"
   name        = local.name
   environment = local.environment
   cidr_block  = "172.16.0.0/16"
 }
 
 module "public_subnets" {
-  source             = "git::git@github.com:opz0/terraform-aws-subnet.git"
+  source             = "git::https://github.com/opz0/terraform-aws-subnet.git?ref=v1.0.0"
   name               = local.name
   environment        = local.environment
   availability_zones = ["us-east-1b", "us-east-1c"]
   type               = "public"
-  vpc_id             = module.vpc.vpc_id
+  vpc_id             = module.vpc.id
   cidr_block         = module.vpc.vpc_cidr_block
   igw_id             = module.vpc.igw_id
   ipv6_cidr_block    = module.vpc.ipv6_cidr_block
@@ -28,7 +28,7 @@ module "public_subnets" {
 
 
 module "iam-role" {
-  source             = "git::git@github.com:opz0/terraform-aws-iam-role.git"
+  source             = "git::https://github.com/opz0/terraform-aws-iam-role.git?ref=v1.0.0"
   name               = local.name
   environment        = local.environment
   assume_role_policy = data.aws_iam_policy_document.default.json
@@ -62,18 +62,18 @@ data "aws_iam_policy_document" "iam-policy" {
 }
 
 module "ec2" {
-  source                      = "git::git@github.com:opz0/terraform-aws-ec2.git?ref=master"
+  source                      = "git::https://github.com/opz0/terraform-aws-ec2.git?ref=v1.0.0"
   name                        = local.name
   environment                 = local.environment
   instance_count              = 1
   ami                         = "ami-053b0d53c279acc90"
   instance_type               = "t2.nano"
   monitoring                  = false
-  vpc_id                      = module.vpc.vpc_id
+  vpc_id                      = module.vpc.id
   ssh_allowed_ip              = ["0.0.0.0/0"]
   ssh_allowed_ports           = [22]
   tenancy                     = "default"
-  public_key                  = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCzJVDK2umFR7a47ebFhIapr00fh6KZVpMFxOp9CRn7AQQdwN7mjm+NWT7LsyKo0i5bLeHpo5Iqu4QoN1Ld1abG4wq7kMhJVC8E6+dPej5SlqyXaXIZOOfdu9zOaDAH2urEodKa+m8H4qf7vYZqhhWdCrS9gW8IAvN08jvw+BKweUIvgAJvx/t6JLyhEV1gqbcRq2Fz3S3OVLTmLclWn+bwugjYSOcHGc2qVrVd4Tar8RjvQl32aNkscutdbVgaE1mnFMQz0kTZ2a78lfI7od10UMnCj1Fjf5wdYzT60CXJ6wLFto/nko5TpZwIzjsMXen1Tp0Futr4efz8fPjdtM568sV0ZL4ltJPypComy3/PiyGRz7BdJ1VCco1g/pH+vteQ4CjOTfmL+8Z7/DLJ04soUVrSqTHl/l/FcG4cO3x2rNJxNTQGqLCvXBXEDfQKpQR/zpS0wotoF1FN3eKkgifzcM1T1zLwKyaOnukbnzTZTAZjA6mtjK/BTcoU0ElzHYU= satish@satish"
+  public_key                  = "ssh-rsaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXrNJxNTQGqLCvXBXEDfQKpQR/zpS0wotoF1FN3eKkgifzcM1T1zLwKyaOnukbnzTZTAZjA6mtjK/BTcoU0ElzHYU= satish@satish"
   subnet_ids                  = tolist(module.public_subnets.public_subnet_id)
   iam_instance_profile        = module.iam-role.name
   assign_eip_address          = true
@@ -95,10 +95,10 @@ module "nlb" {
   enable                     = true
   internal                   = false
   load_balancer_type         = "network"
-  instance_count             = module.ec2.instance_count
+  instance_count             = 1
   subnets                    = module.public_subnets.public_subnet_id
   target_id                  = module.ec2.instance_id
-  vpc_id                     = module.vpc.vpc_id
+  vpc_id                     = module.vpc.id
   enable_deletion_protection = false
   with_target_group          = true
   http_tcp_listeners = [
