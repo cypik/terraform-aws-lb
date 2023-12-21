@@ -8,7 +8,7 @@ variable "name" {
 
 variable "repository" {
   type        = string
-  default     = "https://github.com/Opz0/terraform-aws-alb"
+  default     = "https://github.com/cypik/terraform-aws-alb"
   description = "Terraform current module repo"
 
   validation {
@@ -34,7 +34,7 @@ variable "label_order" {
 variable "managedby" {
   type        = string
   default     = ""
-  description = "ManagedBy, eg 'Opz0'."
+  description = "ManagedBy, eg 'cypik'."
 }
 
 # Module      : ALB
