@@ -14,6 +14,8 @@ This module is basically combination of Terraform open source and includes autom
 ## Usage
 To use this module, you can include it in your Terraform configuration. Here's an example of how to use it:
 
+# Examples:
+
 ## Example: alb
 
 ```hcl
@@ -82,7 +84,7 @@ module "alb" {
 }
 ```
 
-## example: clb
+## Example: clb
 
 ```hcl
 module "clb" {
@@ -118,7 +120,7 @@ module "clb" {
   health_check_healthy_threshold   = 5
 }
 ```
-## example: nlb
+## Example: nlb
 
 ```hcl
 module "nlb" {
