@@ -21,7 +21,7 @@ variable "repository" {
 
 variable "environment" {
   type        = string
-  default     = "test"
+  default     = ""
   description = "Environment (e.g. `prod`, `dev`, `staging`)."
 }
 

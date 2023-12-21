@@ -3,7 +3,7 @@ provider "aws" {
 }
 
 locals {
-  name        = "albb"
+  name        = "alb"
   environment = "test"
 }
 
