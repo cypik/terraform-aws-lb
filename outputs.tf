@@ -1,5 +1,3 @@
-#Module      : ALB
-#Description : This terraform module is used to create ALB on AWS.
 output "name" {
   value       = join("", aws_lb.main[*].name)
   description = "The ARN suffix of the ALB."
