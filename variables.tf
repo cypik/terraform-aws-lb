@@ -1,5 +1,3 @@
-#Module      : LABEL
-#Description : Terraform label module variables
 variable "name" {
   type        = string
   default     = ""
@@ -18,7 +16,6 @@ variable "repository" {
   }
 }
 
-
 variable "environment" {
   type        = string
   default     = ""
@@ -36,9 +33,6 @@ variable "managedby" {
   default     = "cypik"
   description = "ManagedBy, eg 'cypik'."
 }
-
-# Module      : ALB
-# Description : Terraform ALB module variables.
 
 variable "instance_count" {
   type        = number
