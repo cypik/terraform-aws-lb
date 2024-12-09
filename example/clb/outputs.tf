@@ -22,3 +22,8 @@ output "zone_id" {
   value       = module.clb.zone_id
   description = "The zone_id of the load balancer to assist with creating DNS records."
 }
+
+output "clb_name" {
+  value      = module.clb.clb_name
+  depends_on = []
+}

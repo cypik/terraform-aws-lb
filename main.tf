@@ -1,6 +1,6 @@
 module "labels" {
   source      = "cypik/labels/aws"
-  version     = "1.0.1"
+  version     = "1.0.2"
   name        = var.name
   repository  = var.repository
   environment = var.environment
@@ -77,6 +77,14 @@ resource "aws_lb" "main" {
   tags                                        = module.labels.tags
   drop_invalid_header_fields                  = true
 
+  # Optional Arguments
+  #  connection_logs                              = var.connection_logs != null ? var.connection_logs : null
+  client_keep_alive                = var.client_keep_alive
+  customer_owned_ipv4_pool         = var.customer_owned_ipv4_pool
+  dns_record_client_routing_policy = var.dns_record_client_routing_policy
+  enable_zonal_shift               = var.enable_zonal_shift
+  #  enforce_security_group_inbound_rules_on_private_link_traffic = var.enforce_security_group_inbound_rules_on_private_link_traffic
+
   timeouts {
     create = var.load_balancer_create_timeout
     delete = var.load_balancer_delete_timeout
@@ -92,7 +100,6 @@ resource "aws_lb" "main" {
       prefix  = try(access_logs.value.prefix, null)
     }
   }
-
   dynamic "subnet_mapping" {
     for_each = var.subnet_mapping
 
@@ -113,6 +120,7 @@ resource "aws_lb_listener" "https" {
   protocol          = var.listener_protocol
   ssl_policy        = var.ssl_policy
   certificate_arn   = var.listener_certificate_arn
+
   default_action {
     target_group_arn = join("", aws_lb_target_group.main[*].arn)
     type             = var.listener_type
@@ -144,6 +152,7 @@ resource "aws_lb_listener" "https" {
         }
       }
     }
+
     dynamic "fixed_response" {
       for_each = var.listener_https_fixed_response != null ? [var.listener_https_fixed_response] : []
 
@@ -312,13 +321,9 @@ resource "aws_lb_listener_rule" "http_tcp_listener_rule" {
   listener_arn = aws_lb_listener.nhttp[lookup(var.http_tcp_listener_rules[count.index], "http_tcp_listener_index", count.index)].arn
   priority     = lookup(var.http_tcp_listener_rules[count.index], "priority", null)
 
-  # redirect actions
+  # Redirect Actions
   dynamic "action" {
-    for_each = [
-      for action_rule in var.http_tcp_listener_rules[count.index].actions :
-      action_rule
-      if action_rule.type == "redirect"
-    ]
+    for_each = [for action_rule in var.http_tcp_listener_rules[count.index].actions : action_rule if action_rule.type == "redirect"]
 
     content {
       type = action.value["type"]
@@ -333,76 +338,22 @@ resource "aws_lb_listener_rule" "http_tcp_listener_rule" {
     }
   }
 
-  # fixed-response actions
-  dynamic "action" {
-    for_each = [
-      for action_rule in var.http_tcp_listener_rules[count.index].actions :
-      action_rule
-      if action_rule.type == "fixed-response"
-    ]
+  # Other Actions (Fixed Response, Forward, Weighted Forward)...
 
-    content {
-      type = action.value["type"]
-      fixed_response {
-        message_body = lookup(action.value, "message_body", null)
-        status_code  = lookup(action.value, "status_code", null)
-        content_type = action.value["content_type"]
-      }
-    }
-  }
-
-  # forward actions
-  dynamic "action" {
-    for_each = [
-      for action_rule in var.http_tcp_listener_rules[count.index].actions :
-      action_rule
-      if action_rule.type == "forward"
-    ]
-
-    content {
-      type             = action.value["type"]
-      target_group_arn = aws_lb_target_group.main[lookup(action.value, "target_group_index", count.index)].id
-    }
-  }
-
-  # weighted forward actions
-  dynamic "action" {
-    for_each = [
-      for action_rule in var.http_tcp_listener_rules[count.index].actions :
-      action_rule
-      if action_rule.type == "weighted-forward"
-    ]
-
-    content {
-      type = "forward"
-      forward {
-        dynamic "target_group" {
-          for_each = action.value["target_groups"]
-
-          content {
-            arn    = aws_lb_target_group.main[target_group.value["target_group_index"]].id
-            weight = target_group.value["weight"]
-          }
-        }
-        dynamic "stickiness" {
-          for_each = [lookup(action.value, "stickiness", {})]
-
-          content {
-            enabled  = try(stickiness.value["enabled"], false)
-            duration = try(stickiness.value["duration"], 1)
-          }
-        }
-      }
-    }
-  }
-
-  # Path Pattern condition
+  # Host Header Condition
   dynamic "condition" {
-    for_each = [
-      for condition_rule in var.http_tcp_listener_rules[count.index].conditions :
-      condition_rule
-      if length(lookup(condition_rule, "path_patterns", [])) > 0
-    ]
+    for_each = [for condition_rule in var.http_tcp_listener_rules[count.index].conditions : condition_rule if length(lookup(condition_rule, "host_header", [])) > 0]
+
+    content {
+      host_header {
+        values = condition.value["host_header"]
+      }
+    }
+  }
+
+  # Path Pattern Condition
+  dynamic "condition" {
+    for_each = [for condition_rule in var.http_tcp_listener_rules[count.index].conditions : condition_rule if length(lookup(condition_rule, "path_patterns", [])) > 0]
 
     content {
       path_pattern {
@@ -411,83 +362,43 @@ resource "aws_lb_listener_rule" "http_tcp_listener_rule" {
     }
   }
 
-  # Host header condition
+  # HTTP Header Condition
   dynamic "condition" {
-    for_each = [
-      for condition_rule in var.http_tcp_listener_rules[count.index].conditions :
-      condition_rule
-      if length(lookup(condition_rule, "host_headers", [])) > 0
-    ]
+    for_each = [for condition_rule in var.http_tcp_listener_rules[count.index].conditions : condition_rule if length(lookup(condition_rule, "http_headers", [])) > 0]
 
     content {
-      host_header {
-        values = condition.value["host_headers"]
+      http_header {
+        http_header_name = condition.value["http_headers"][0]["http_header_name"]
+        values           = condition.value["http_headers"][0]["values"]
       }
     }
   }
 
-  # Http header condition
+  # HTTP Method Condition
   dynamic "condition" {
-    for_each = [
-      for condition_rule in var.http_tcp_listener_rules[count.index].conditions :
-      condition_rule
-      if length(lookup(condition_rule, "http_headers", [])) > 0
-    ]
-
-    content {
-      dynamic "http_header" {
-        for_each = condition.value["http_headers"]
-
-        content {
-          http_header_name = http_header.value["http_header_name"]
-          values           = http_header.value["values"]
-        }
-      }
-    }
-  }
-
-  # Http request method condition
-  dynamic "condition" {
-    for_each = [
-      for condition_rule in var.http_tcp_listener_rules[count.index].conditions :
-      condition_rule
-      if length(lookup(condition_rule, "http_request_methods", [])) > 0
-    ]
+    for_each = [for condition_rule in var.http_tcp_listener_rules[count.index].conditions : condition_rule if length(lookup(condition_rule, "http_methods", [])) > 0]
 
     content {
       http_request_method {
-        values = condition.value["http_request_methods"]
+        values = condition.value["http_methods"]
       }
     }
   }
 
-  # Query string condition
+  # Query String Condition
   dynamic "condition" {
-    for_each = [
-      for condition_rule in var.http_tcp_listener_rules[count.index].conditions :
-      condition_rule
-      if length(lookup(condition_rule, "query_strings", [])) > 0
-    ]
+    for_each = [for condition_rule in var.http_tcp_listener_rules[count.index].conditions : condition_rule if length(lookup(condition_rule, "query_strings", [])) > 0]
 
     content {
-      dynamic "query_string" {
-        for_each = condition.value["query_strings"]
-
-        content {
-          key   = lookup(query_string.value, "key", null)
-          value = query_string.value["value"]
-        }
+      query_string {
+        values = condition.value["query_strings"]
       }
     }
   }
 
-  # Source IP address condition
+  # Source IP Condition
   dynamic "condition" {
-    for_each = [
-      for condition_rule in var.http_tcp_listener_rules[count.index].conditions :
-      condition_rule
-      if length(lookup(condition_rule, "source_ips", [])) > 0
-    ]
+    for_each = [for condition_rule in var.http_tcp_listener_rules[count.index].conditions : condition_rule if length(lookup(condition_rule, "source_ips", [])) > 0]
 
     content {
       source_ip {
@@ -495,8 +406,6 @@ resource "aws_lb_listener_rule" "http_tcp_listener_rule" {
       }
     }
   }
-
-  tags = module.labels.tags
 }
 
 resource "aws_lb_listener_rule" "https_listener_rule" {

@@ -9,7 +9,7 @@ locals {
 
 module "vpc" {
   source      = "cypik/vpc/aws"
-  version     = "1.0.1"
+  version     = "1.0.2"
   name        = local.name
   environment = local.environment
   cidr_block  = "172.16.0.0/16"
@@ -17,12 +17,12 @@ module "vpc" {
 
 module "subnet" {
   source             = "cypik/subnet/aws"
-  version            = "1.0.1"
+  version            = "1.0.3"
   name               = local.name
   environment        = local.environment
   availability_zones = ["us-east-1b", "us-east-1c"]
   type               = "public"
-  vpc_id             = module.vpc.id
+  vpc_id             = module.vpc.vpc_id
   cidr_block         = module.vpc.vpc_cidr_block
   igw_id             = module.vpc.igw_id
   ipv6_cidr_block    = module.vpc.ipv6_cidr_block
@@ -66,19 +66,19 @@ data "aws_iam_policy_document" "iam-policy" {
 
 module "ec2" {
   source                      = "cypik/ec2/aws"
-  version                     = "1.0.1"
+  version                     = "1.0.4"
   name                        = local.name
   environment                 = local.environment
   instance_count              = 1
   ami                         = "ami-053b0d53c279acc90"
   instance_type               = "t2.nano"
   monitoring                  = false
-  vpc_id                      = module.vpc.id
+  vpc_id                      = module.vpc.vpc_id
   ssh_allowed_ip              = ["0.0.0.0/0"]
   ssh_allowed_ports           = [22]
   tenancy                     = "default"
-  public_key                  = "ssh-rsaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXrNJxNTQGqLCvXBXEDfQKpQR/zpS0wotoF1FN3eKkgifzcM1T1zLwKyaOnukbnzTZTAZjA6mtjK/BTcoU0ElzHYU= satish@satish"
-  subnet_ids                  = tolist(module.public_subnets.public_subnet_id)
+  public_key                  = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXtnrTCvN0ThcuIARFyEyQUSP9W7JUKs92R7ccjf9D4ccOYV6DMAtezwp48DplX+4Thap3v8tiFvwbtkT1Bld7WHLxD9lKsEkuuJBuCc9vpseClV9O+bN1Gx0SKiV+1AkmvsTckhyO55ldnkeGh7L+LNsaAsC5BbmhwLqlLnSHj8RdRu8z0GNIRmqRit0tNXXfux0VP0hdXAh+IblsQzqbEWr7viG2oWcntQlSZgVf+kS8SisbnsrM0b56rOVG5MZBH98cVjuazt0NHxDodrCYdZVc6dS4pHc+WxunaILSXyAJJHOEaSwU2rwCD03HPjLZD6WcU5Jlo+vz5ofIc3Vz06MgYRkFJHB1cRgqpdF5ckTPSa7KjjiK9yDJmxwiw7ZNRrs525oqk5uJfXkHmOcIvfeRhnLBg84Eqvqdu5jjsIJRSiOCZdUpB82KZ5DaPhQH0Ev6ua9JoMQCkUCUiQlNvHqjhz+Iy4fn3lsvengN7ennSRjPdvhhDRRDRjH+gVk= satish@satish"
+  subnet_ids                  = tolist(module.subnet.public_subnet_id)
   iam_instance_profile        = module.iam-role.name
   assign_eip_address          = true
   associate_public_ip_address = true
@@ -93,16 +93,15 @@ module "ec2" {
 
 
 module "nlb" {
-  source = "./../../"
-
+  source                     = "./../../"
   name                       = "app"
   enable                     = true
   internal                   = false
   load_balancer_type         = "network"
   instance_count             = 1
-  subnets                    = module.public_subnets.public_subnet_id
+  subnets                    = module.subnet.public_subnet_id
   target_id                  = module.ec2.instance_id
-  vpc_id                     = module.vpc.id
+  vpc_id                     = module.vpc.vpc_id
   enable_deletion_protection = false
   with_target_group          = true
   http_tcp_listeners = [
