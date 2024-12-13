@@ -77,7 +77,7 @@ module "ec2" {
   ssh_allowed_ip              = ["0.0.0.0/0"]
   ssh_allowed_ports           = [22]
   tenancy                     = "default"
-  public_key                  = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDXtnrTCvN0ThcuIARFyEyQUSP9W7JUKs92R7ccjf9D4ccOYV6DMAtezwp48DplX+4Thap3v8tiFvwbtkT1Bld7WHLxD9lKsEkuuJBuCc9vpseClV9O+bN1Gx0SKiV+1AkmvsTckhyO55ldnkeGh7L+LNsaAsC5BbmhwLqlLnSHj8RdRu8z0GNIRmqRit0tNXXfux0VP0hdXAh+IblsQzqbEWr7viG2oWcntQlSZgVf+kS8SisbnsrM0b56rOVG5MZBH98cVjuazt0NHxDodrCYdZVc6dS4pHc+WxunaILSXyAJJHOEaSwU2rwCD03HPjLZD6WcU5Jlo+vz5ofIc3Vz06MgYRkFJHB1cRgqpdF5ckTPSa7KjjiK9yDJmxwiw7ZNRrs525oqk5uJfXkHmOcIvfeRhnLBg84Eqvqdu5jjsIJRSiOCZdUpB82KZ5DaPhQH0Ev6ua9JoMQCkUCUiQlNvHqjhz+Iy4fn3lsvengN7ennSRjPdvhhDRRDRjH+gVk= satish@satish"
+  public_key                  = "sshxxxxxQnav6ua9JoMQCkUCUiQlNvHqjhz+Iy4fn3lsvengN7ennSRjPdvhhDRRDRjH+gVk="
   subnet_ids                  = tolist(module.subnet.public_subnet_id)
   iam_instance_profile        = module.iam-role.name
   assign_eip_address          = true
