@@ -52,7 +52,6 @@ variable "load_balancer_type" {
   description = "The type of load balancer to create. Possible values are application or network. The default value is application."
 }
 
-
 variable "subnet_mapping" {
   default     = []
   type        = list(map(string))
@@ -150,7 +149,6 @@ variable "target_id" {
   default     = null
   description = "The ID of the target. This is the Instance ID for an instance, or the container ID for an ECS container. If the target type is ip, specify an IP address."
 }
-
 
 variable "idle_timeout" {
   type        = number
@@ -396,12 +394,6 @@ variable "xff_header_processing_mode" {
   default     = "append"
   description = "Determines how the load balancer modifies the X-Forwarded-For header in the HTTP request before sending the request to the target."
 }
-
-#variable "http_tcp_listener_rules" {
-#  type        = any
-#  default     = []
-#  description = "A list of maps describing the Listener Rules for this ALB. Required key/values: actions, conditions. Optional key/values: priority, http_tcp_listener_index (default to http_tcp_listeners[count.index])"
-#}
 
 variable "http_tcp_listener_rules" {
   description = "A list of listener rules with actions and conditions"

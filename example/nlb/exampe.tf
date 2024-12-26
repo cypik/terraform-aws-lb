@@ -28,7 +28,6 @@ module "subnet" {
   ipv6_cidr_block    = module.vpc.ipv6_cidr_block
 }
 
-
 module "iam-role" {
   source             = "cypik/iam-role/aws"
   version            = "1.0.1"
@@ -88,9 +87,6 @@ module "ec2" {
   ebs_volume_type             = "gp2"
   ebs_volume_size             = 30
 }
-
-
-
 
 module "nlb" {
   source                     = "./../../"

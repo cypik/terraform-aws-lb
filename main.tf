@@ -11,7 +11,7 @@ module "labels" {
 resource "aws_security_group" "default" {
   count = var.enable_security_group && length(var.sg_ids) < 1 ? 1 : 0
 
-  name        = format("%s-sg", module.labels.id)
+  name        = format("%s-lb-sg", module.labels.id)
   vpc_id      = var.vpc_id
   description = var.sg_description
   tags        = module.labels.tags
