@@ -23,7 +23,7 @@ To use this module, you can include it in your Terraform configuration. Here's a
 ```hcl
 module "alb" {
   source                     = "cypik/lb/aws"
-  version                    =  "1.0.1"
+  version                    =  "1.0.2"
   name                       = local.name
   enable                     = true
   internal                   = true
@@ -92,7 +92,7 @@ module "alb" {
 ```hcl
 module "clb" {
   source             = "cypik/lb/aws"
-  version            =  "1.0.1"
+  version            =  "1.0.2"
   name               = "app"
   load_balancer_type = "classic"
   clb_enable         = true
@@ -129,7 +129,7 @@ module "clb" {
 ```hcl
 module "nlb" {
   source                     = "cypik/lb/aws"
-  version                    =  "1.0.1"
+  version                    =  "1.0.2"
   name                       = "app"
   enable                     = true
   internal                   = false
@@ -196,20 +196,20 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.6.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.32.1 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9.5 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=5.67.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.32.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >=5.67.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_labels"></a> [labels](#module\_labels) | cypik/labels/aws | 1.0.1 |
+| <a name="module_labels"></a> [labels](#module\_labels) | cypik/labels/aws | 1.0.2 |
 
 ## Resources
 
@@ -241,9 +241,12 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 | <a name="input_allowed_ports"></a> [allowed\_ports](#input\_allowed\_ports) | List of allowed ingress ports | `list(any)` | `[]` | no |
 | <a name="input_cidr_blocks"></a> [cidr\_blocks](#input\_cidr\_blocks) | equal to 0. The supported values are defined in the IpProtocol argument on the IpPermission API reference | `list(string)` | <pre>[<br>  "0.0.0.0/0"<br>]</pre> | no |
 | <a name="input_clb_enable"></a> [clb\_enable](#input\_clb\_enable) | If true, create clb. | `bool` | `false` | no |
+| <a name="input_client_keep_alive"></a> [client\_keep\_alive](#input\_client\_keep\_alive) | Client keep-alive value in seconds (valid range: 60-604800) | `number` | `3600` | no |
 | <a name="input_connection_draining"></a> [connection\_draining](#input\_connection\_draining) | TBoolean to enable connection draining. Default: false. | `bool` | `false` | no |
 | <a name="input_connection_draining_timeout"></a> [connection\_draining\_timeout](#input\_connection\_draining\_timeout) | The time after which connection draining is aborted in seconds. | `number` | `300` | no |
+| <a name="input_customer_owned_ipv4_pool"></a> [customer\_owned\_ipv4\_pool](#input\_customer\_owned\_ipv4\_pool) | ID of the customer-owned IPv4 pool to use for the load balancer | `string` | `""` | no |
 | <a name="input_desync_mitigation_mode"></a> [desync\_mitigation\_mode](#input\_desync\_mitigation\_mode) | Determines how the load balancer handles requests that might pose a security risk to an application due to HTTP desync. | `string` | `"defensive"` | no |
+| <a name="input_dns_record_client_routing_policy"></a> [dns\_record\_client\_routing\_policy](#input\_dns\_record\_client\_routing\_policy) | Traffic distribution policy for load balancer availability zones | `string` | `"any_availability_zone"` | no |
 | <a name="input_egress_protocol"></a> [egress\_protocol](#input\_egress\_protocol) | equal to 0. The supported values are defined in the IpProtocol argument on the IpPermission API reference | `number` | `-1` | no |
 | <a name="input_egress_rule"></a> [egress\_rule](#input\_egress\_rule) | Enable to create egress rule | `bool` | `true` | no |
 | <a name="input_enable"></a> [enable](#input\_enable) | If true, create alb. | `bool` | `false` | no |
@@ -254,6 +257,7 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 | <a name="input_enable_tls_version_and_cipher_suite_headers"></a> [enable\_tls\_version\_and\_cipher\_suite\_headers](#input\_enable\_tls\_version\_and\_cipher\_suite\_headers) | Indicates whether the two headers (x-amzn-tls-version and x-amzn-tls-cipher-suite), which contain information about the negotiated TLS version and cipher suite, are added to the client request before sending it to the target. | `bool` | `false` | no |
 | <a name="input_enable_waf_fail_open"></a> [enable\_waf\_fail\_open](#input\_enable\_waf\_fail\_open) | Indicates whether to route requests to targets if lb fails to forward the request to AWS WAF | `bool` | `false` | no |
 | <a name="input_enable_xff_client_port"></a> [enable\_xff\_client\_port](#input\_enable\_xff\_client\_port) | Indicates whether the X-Forwarded-For header should preserve the source port that the client used to connect to the load balancer in application load balancers. | `bool` | `true` | no |
+| <a name="input_enable_zonal_shift"></a> [enable\_zonal\_shift](#input\_enable\_zonal\_shift) | Whether zonal shift is enabled | `bool` | `false` | no |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment (e.g. `prod`, `dev`, `staging`). | `string` | `""` | no |
 | <a name="input_extra_ssl_certs"></a> [extra\_ssl\_certs](#input\_extra\_ssl\_certs) | A list of maps describing any extra SSL certificates to apply to the HTTPS listeners. Required key/values: certificate\_arn, https\_listener\_index (the index of the listener within https\_listeners which the cert applies toward). | `list(map(string))` | `[]` | no |
 | <a name="input_from_port"></a> [from\_port](#input\_from\_port) | (Required) Start port (or ICMP type number if protocol is icmp or icmpv6). | `number` | `0` | no |
@@ -265,9 +269,9 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 | <a name="input_http_enabled"></a> [http\_enabled](#input\_http\_enabled) | A boolean flag to enable/disable HTTP listener. | `bool` | `true` | no |
 | <a name="input_http_listener_type"></a> [http\_listener\_type](#input\_http\_listener\_type) | The type of routing action. Valid values are forward, redirect, fixed-response, authenticate-cognito and authenticate-oidc. | `string` | `"redirect"` | no |
 | <a name="input_http_port"></a> [http\_port](#input\_http\_port) | The port on which the load balancer is listening. like 80 or 443. | `number` | `80` | no |
-| <a name="input_http_tcp_listener_rules"></a> [http\_tcp\_listener\_rules](#input\_http\_tcp\_listener\_rules) | A list of maps describing the Listener Rules for this ALB. Required key/values: actions, conditions. Optional key/values: priority, http\_tcp\_listener\_index (default to http\_tcp\_listeners[count.index]) | `any` | `[]` | no |
+| <a name="input_http_tcp_listener_rules"></a> [http\_tcp\_listener\_rules](#input\_http\_tcp\_listener\_rules) | A list of listener rules with actions and conditions | <pre>list(object({<br>    http_tcp_listener_index = number<br>    priority                = optional(number)<br>    actions = list(object({<br>      type               = string<br>      host               = optional(string)<br>      path               = optional(string)<br>      port               = optional(string)<br>      protocol           = optional(string)<br>      query              = optional(string)<br>      status_code        = optional(string)<br>      message_body       = optional(string)<br>      content_type       = optional(string)<br>      target_group_index = optional(number)<br>      target_groups = optional(list(object({<br>        target_group_index = number<br>        weight             = optional(number)<br>      })))<br>      stickiness = optional(object({<br>        enabled  = optional(bool)<br>        duration = optional(number)<br>      }))<br>    }))<br>    conditions = list(object({<br>      path_patterns = optional(list(string))<br>      host_header   = optional(list(string))<br>      http_headers = optional(list(object({<br>        http_header_name = string<br>        values           = list(string)<br>      })))<br>      http_methods = optional(list(string))<br>      query_strings = optional(list(object({<br>        key   = optional(string)<br>        value = string<br>      })))<br>      source_ips = optional(list(string))<br>    }))<br>  }))</pre> | `[]` | no |
 | <a name="input_http_tcp_listeners"></a> [http\_tcp\_listeners](#input\_http\_tcp\_listeners) | A list of maps describing the HTTP listeners or TCP ports for this ALB. Required key/values: port, protocol. Optional key/values: target\_group\_index (defaults to http\_tcp\_listeners[count.index]) | `any` | `[]` | no |
-| <a name="input_https_enabled"></a> [https\_enabled](#input\_https\_enabled) | A boolean flag to enable/disable HTTPS listener. | `bool` | `true` | no |
+| <a name="input_https_enabled"></a> [https\_enabled](#input\_https\_enabled) | A boolean flag to enable/disable HTTPS listener. | `bool` | `false` | no |
 | <a name="input_https_listener_rules"></a> [https\_listener\_rules](#input\_https\_listener\_rules) | A list of maps describing the Listener Rules for this ALB. Required key/values: actions, conditions. Optional key/values: priority, https\_listener\_index (default to https\_listeners[count.index]) | `any` | `[]` | no |
 | <a name="input_https_listeners"></a> [https\_listeners](#input\_https\_listeners) | A list of maps describing the HTTPS listeners for this ALB. Required key/values: port, certificate\_arn. Optional key/values: ssl\_policy (defaults to ELBSecurityPolicy-2016-08), target\_group\_index (defaults to 0) | `list(map(string))` | `[]` | no |
 | <a name="input_https_port"></a> [https\_port](#input\_https\_port) | The port on which the load balancer is listening. like 80 or 443. | `number` | `443` | no |
@@ -287,7 +291,7 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 | <a name="input_load_balancer_delete_timeout"></a> [load\_balancer\_delete\_timeout](#input\_load\_balancer\_delete\_timeout) | Timeout value when deleting the ALB. | `string` | `"10m"` | no |
 | <a name="input_load_balancer_type"></a> [load\_balancer\_type](#input\_load\_balancer\_type) | The type of load balancer to create. Possible values are application or network. The default value is application. | `string` | `""` | no |
 | <a name="input_load_balancer_update_timeout"></a> [load\_balancer\_update\_timeout](#input\_load\_balancer\_update\_timeout) | Timeout value when updating the ALB. | `string` | `"10m"` | no |
-| <a name="input_managedby"></a> [managedby](#input\_managedby) | ManagedBy, eg 'cypik'. | `string` | `"cypik"` | no |
+| <a name="input_managedby"></a> [managedby](#input\_managedby) | ManagedBy, eg 'info@cypik.com'. | `string` | `"info@cypik.com"` | no |
 | <a name="input_name"></a> [name](#input\_name) | Name  (e.g. `app` or `cluster`). | `string` | `""` | no |
 | <a name="input_preserve_host_header"></a> [preserve\_host\_header](#input\_preserve\_host\_header) | Indicates whether Host header should be preserve and forward to targets without any change. Defaults to false. | `bool` | `false` | no |
 | <a name="input_protocol"></a> [protocol](#input\_protocol) | The protocol. If not icmp, tcp, udp, or all use the. | `string` | `"tcp"` | no |
@@ -320,6 +324,7 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 | <a name="output_clb_zone_id"></a> [clb\_zone\_id](#output\_clb\_zone\_id) | The ID of the zone which ALB is provisioned. |
 | <a name="output_dns_name"></a> [dns\_name](#output\_dns\_name) | DNS name of ALB. |
 | <a name="output_http_listener_arn"></a> [http\_listener\_arn](#output\_http\_listener\_arn) | The ARN of the HTTP listener. |
+| <a name="output_http_tcp_listener_rules"></a> [http\_tcp\_listener\_rules](#output\_http\_tcp\_listener\_rules) | List of listener rules created |
 | <a name="output_https_listener_arn"></a> [https\_listener\_arn](#output\_https\_listener\_arn) | The ARN of the HTTPS listener. |
 | <a name="output_listener_arns"></a> [listener\_arns](#output\_listener\_arns) | A list of all the listener ARNs. |
 | <a name="output_main_target_group_arn"></a> [main\_target\_group\_arn](#output\_main\_target\_group\_arn) | The main target group ARN. |
@@ -327,5 +332,9 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 | <a name="output_security_group_arn"></a> [security\_group\_arn](#output\_security\_group\_arn) | Amazon Resource Name (ARN) of the security group |
 | <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | ID of the security group |
 | <a name="output_tags"></a> [tags](#output\_tags) | A mapping of tags to assign to the resource. |
+| <a name="output_target_group_arns"></a> [target\_group\_arns](#output\_target\_group\_arns) | ARNs of the created target groups. |
+| <a name="output_target_group_ids"></a> [target\_group\_ids](#output\_target\_group\_ids) | IDs of the created target groups. |
+| <a name="output_target_group_names"></a> [target\_group\_names](#output\_target\_group\_names) | Names of the created target groups. |
+| <a name="output_target_group_tags"></a> [target\_group\_tags](#output\_target\_group\_tags) | Tags associated with the target groups. |
 | <a name="output_zone_id"></a> [zone\_id](#output\_zone\_id) | The ID of the zone which ALB is provisioned. |
 <!-- END_TF_DOCS -->

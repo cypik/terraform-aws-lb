@@ -30,8 +30,8 @@ variable "label_order" {
 
 variable "managedby" {
   type        = string
-  default     = "cypik"
-  description = "ManagedBy, eg 'cypik'."
+  default     = "info@cypik.com"
+  description = "ManagedBy, eg 'info@cypik.com'."
 }
 
 variable "instance_count" {
@@ -51,7 +51,6 @@ variable "load_balancer_type" {
   default     = ""
   description = "The type of load balancer to create. Possible values are application or network. The default value is application."
 }
-
 
 variable "subnet_mapping" {
   default     = []
@@ -109,7 +108,7 @@ variable "http_port" {
 
 variable "https_enabled" {
   type        = bool
-  default     = true
+  default     = false
   description = "A boolean flag to enable/disable HTTPS listener."
 }
 
@@ -150,7 +149,6 @@ variable "target_id" {
   default     = null
   description = "The ID of the target. This is the Instance ID for an instance, or the container ID for an ECS container. If the target type is ip, specify an IP address."
 }
-
 
 variable "idle_timeout" {
   type        = number
@@ -398,10 +396,48 @@ variable "xff_header_processing_mode" {
 }
 
 variable "http_tcp_listener_rules" {
-  type        = any
-  default     = []
-  description = "A list of maps describing the Listener Rules for this ALB. Required key/values: actions, conditions. Optional key/values: priority, http_tcp_listener_index (default to http_tcp_listeners[count.index])"
+  description = "A list of listener rules with actions and conditions"
+  type = list(object({
+    http_tcp_listener_index = number
+    priority                = optional(number)
+    actions = list(object({
+      type               = string
+      host               = optional(string)
+      path               = optional(string)
+      port               = optional(string)
+      protocol           = optional(string)
+      query              = optional(string)
+      status_code        = optional(string)
+      message_body       = optional(string)
+      content_type       = optional(string)
+      target_group_index = optional(number)
+      target_groups = optional(list(object({
+        target_group_index = number
+        weight             = optional(number)
+      })))
+      stickiness = optional(object({
+        enabled  = optional(bool)
+        duration = optional(number)
+      }))
+    }))
+    conditions = list(object({
+      path_patterns = optional(list(string))
+      host_header   = optional(list(string))
+      http_headers = optional(list(object({
+        http_header_name = string
+        values           = list(string)
+      })))
+      http_methods = optional(list(string))
+      query_strings = optional(list(object({
+        key   = optional(string)
+        value = string
+      })))
+      source_ips = optional(list(string))
+    }))
+  }))
+  default = []
 }
+
 
 variable "https_listener_rules" {
   type        = any
@@ -449,4 +485,32 @@ variable "ipv6_cidr_blocks" {
   type        = list(string)
   default     = ["::/0"]
   description = "Enable to create egress rule"
+}
+
+# Optional client keep-alive setting
+variable "client_keep_alive" {
+  type        = number
+  default     = 3600
+  description = "Client keep-alive value in seconds (valid range: 60-604800)"
+}
+
+# Customer-owned IPv4 pool ID
+variable "customer_owned_ipv4_pool" {
+  type        = string
+  default     = ""
+  description = "ID of the customer-owned IPv4 pool to use for the load balancer"
+}
+
+# DNS record client routing policy
+variable "dns_record_client_routing_policy" {
+  type        = string
+  default     = "any_availability_zone"
+  description = "Traffic distribution policy for load balancer availability zones"
+}
+
+# Enable zonal shift flag
+variable "enable_zonal_shift" {
+  type        = bool
+  default     = false
+  description = "Whether zonal shift is enabled"
 }

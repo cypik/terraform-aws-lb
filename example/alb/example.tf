@@ -9,7 +9,7 @@ locals {
 
 module "vpc" {
   source      = "cypik/vpc/aws"
-  version     = "1.0.1"
+  version     = "1.0.2"
   name        = local.name
   environment = local.environment
   cidr_block  = "172.16.0.0/16"
@@ -18,12 +18,12 @@ module "vpc" {
 
 module "subnet" {
   source             = "cypik/subnet/aws"
-  version            = "1.0.1"
+  version            = "1.0.3"
   name               = local.name
   environment        = local.environment
   availability_zones = ["us-east-1b", "us-east-1c"]
   type               = "public"
-  vpc_id             = module.vpc.id
+  vpc_id             = module.vpc.vpc_id
   cidr_block         = module.vpc.vpc_cidr_block
   igw_id             = module.vpc.igw_id
   ipv6_cidr_block    = module.vpc.ipv6_cidr_block
@@ -65,13 +65,13 @@ data "aws_iam_policy_document" "iam-policy" {
 
 module "ec2" {
   source                      = "cypik/ec2/aws"
-  version                     = "1.0.1"
+  version                     = "1.0.4"
   name                        = "alb"
   environment                 = local.environment
-  vpc_id                      = module.vpc.id
+  vpc_id                      = module.vpc.vpc_id
   ssh_allowed_ip              = ["0.0.0.0/0"]
   ssh_allowed_ports           = [22]
-  public_key                  = "AZjA6mtjK/BTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXcoU0ElzHYU= satish@satish"
+  public_key                  = "sshxxxxxQnav6ua9JoMQCkUCUiQlNvHqjhz+Iy4fn3lsvengN7ennSRjPdvhhDRRDRjH+gVk="
   instance_count              = 1
   ami                         = "ami-0fc5d935ebf8bc3bc"
   instance_type               = "t2.nano"
@@ -88,11 +88,8 @@ module "ec2" {
   ebs_volume_size             = 30
 }
 
-
-
 module "alb" {
-  source = "./../../"
-
+  source                     = "./../../"
   name                       = local.name
   enable                     = true
   internal                   = true
@@ -100,7 +97,7 @@ module "alb" {
   instance_count             = 1
   subnets                    = module.subnet.public_subnet_id
   target_id                  = module.ec2.instance_id
-  vpc_id                     = module.vpc.id
+  vpc_id                     = module.vpc.vpc_id
   allowed_ip                 = [module.vpc.vpc_cidr_block]
   allowed_ports              = [3306]
   enable_deletion_protection = false

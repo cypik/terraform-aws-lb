@@ -9,7 +9,7 @@ locals {
 
 module "vpc" {
   source      = "cypik/vpc/aws"
-  version     = "1.0.1"
+  version     = "1.0.2"
   name        = local.name
   environment = local.environment
   cidr_block  = "172.16.0.0/16"
@@ -17,17 +17,16 @@ module "vpc" {
 
 module "subnet" {
   source             = "cypik/subnet/aws"
-  version            = "1.0.1"
+  version            = "1.0.3"
   name               = local.name
   environment        = local.environment
   availability_zones = ["us-east-1b", "us-east-1c"]
   type               = "public"
-  vpc_id             = module.vpc.id
+  vpc_id             = module.vpc.vpc_id
   cidr_block         = module.vpc.vpc_cidr_block
   igw_id             = module.vpc.igw_id
   ipv6_cidr_block    = module.vpc.ipv6_cidr_block
 }
-
 
 module "iam-role" {
   source             = "cypik/iam-role/aws"
@@ -66,19 +65,19 @@ data "aws_iam_policy_document" "iam-policy" {
 
 module "ec2" {
   source                      = "cypik/ec2/aws"
-  version                     = "1.0.1"
+  version                     = "1.0.4"
   name                        = local.name
   environment                 = local.environment
   instance_count              = 1
   ami                         = "ami-053b0d53c279acc90"
   instance_type               = "t2.nano"
   monitoring                  = false
-  vpc_id                      = module.vpc.id
+  vpc_id                      = module.vpc.vpc_id
   ssh_allowed_ip              = ["0.0.0.0/0"]
   ssh_allowed_ports           = [22]
   tenancy                     = "default"
-  public_key                  = "ssh-rsaXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXrNJxNTQGqLCvXBXEDfQKpQR/zpS0wotoF1FN3eKkgifzcM1T1zLwKyaOnukbnzTZTAZjA6mtjK/BTcoU0ElzHYU= satish@satish"
-  subnet_ids                  = tolist(module.public_subnets.public_subnet_id)
+  public_key                  = "sshxxxxxQnav6ua9JoMQCkUCUiQlNvHqjhz+Iy4fn3lsvengN7ennSRjPdvhhDRRDRjH+gVk="
+  subnet_ids                  = tolist(module.subnet.public_subnet_id)
   iam_instance_profile        = module.iam-role.name
   assign_eip_address          = true
   associate_public_ip_address = true
@@ -89,20 +88,16 @@ module "ec2" {
   ebs_volume_size             = 30
 }
 
-
-
-
 module "nlb" {
-  source = "./../../"
-
+  source                     = "./../../"
   name                       = "app"
   enable                     = true
   internal                   = false
   load_balancer_type         = "network"
   instance_count             = 1
-  subnets                    = module.public_subnets.public_subnet_id
+  subnets                    = module.subnet.public_subnet_id
   target_id                  = module.ec2.instance_id
-  vpc_id                     = module.vpc.id
+  vpc_id                     = module.vpc.vpc_id
   enable_deletion_protection = false
   with_target_group          = true
   http_tcp_listeners = [

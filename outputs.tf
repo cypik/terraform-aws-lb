@@ -12,6 +12,7 @@ output "clb_arn" {
   value       = join("", concat(aws_elb.main[*].arn))
   description = "The ARN of the CLB."
 }
+
 output "arn_suffix" {
   value       = join("", aws_lb.main[*].arn_suffix)
   description = "The ARN suffix of the ALB."
@@ -26,6 +27,7 @@ output "clb_name" {
   value       = join("", aws_elb.main[*].dns_name)
   description = "DNS name of CLB."
 }
+
 output "zone_id" {
   value       = join("", aws_lb.main[*].zone_id)
   description = "The ID of the zone which ALB is provisioned."
@@ -35,6 +37,7 @@ output "clb_zone_id" {
   value       = join("", aws_elb.main[*].zone_id)
   description = "The ID of the zone which ALB is provisioned."
 }
+
 output "main_target_group_arn" {
   value       = join("", aws_lb_target_group.main[*].arn)
   description = "The main target group ARN."
@@ -68,4 +71,29 @@ output "security_group_arn" {
 output "security_group_id" {
   description = "ID of the security group"
   value       = try(aws_security_group.default[0].id, null)
+}
+
+output "target_group_arns" {
+  value       = aws_lb_target_group.main[*].arn
+  description = "ARNs of the created target groups."
+}
+
+output "target_group_names" {
+  value       = aws_lb_target_group.main[*].name
+  description = "Names of the created target groups."
+}
+
+output "target_group_ids" {
+  value       = aws_lb_target_group.main[*].id
+  description = "IDs of the created target groups."
+}
+
+output "target_group_tags" {
+  value       = aws_lb_target_group.main[*].tags_all
+  description = "Tags associated with the target groups."
+}
+
+output "http_tcp_listener_rules" {
+  description = "List of listener rules created"
+  value       = aws_lb_listener_rule.http_tcp_listener_rule[*].id
 }
