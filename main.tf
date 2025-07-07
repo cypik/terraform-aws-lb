@@ -32,6 +32,7 @@ resource "aws_security_group_rule" "egress" {
   cidr_blocks       = var.cidr_blocks
   security_group_id = join("", aws_security_group.default[*].id)
 }
+
 #tfsec:ignore:aws-ec2-no-public-egress-sgr
 resource "aws_security_group_rule" "egress_ipv6" {
   count             = (var.enable_security_group == true && length(var.sg_ids) < 1 && var.is_external == false) && var.egress_rule == true ? 1 : 0
@@ -212,7 +213,7 @@ resource "aws_lb_target_group" "main" {
   count                              = var.enable && var.with_target_group ? length(var.target_groups) : 0
   name                               = format("%s-%s", module.labels.id, count.index)
   port                               = lookup(var.target_groups[count.index], "backend_port", null)
-  protocol                           = lookup(var.target_groups[count.index], "backend_protocol", null) != null ? upper(lookup(var.target_groups[count.index], "backend_protocol")) : null
+  protocol                           = lookup(var.target_groups[count.index], "backend_protocol", null) != null ? upper(lookup(var.target_groups[count.index], "backend_protocol", null)) : null
   vpc_id                             = var.vpc_id
   target_type                        = lookup(var.target_groups[count.index], "target_type", null)
   deregistration_delay               = lookup(var.target_groups[count.index], "deregistration_delay", null)
