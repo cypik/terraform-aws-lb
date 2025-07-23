@@ -8,8 +8,8 @@ output "tags" {
   description = "A mapping of tags to assign to the alb."
 }
 
-output "main_target_group_arn" {
-  value       = module.alb[*].main_target_group_arn
+output "target_group_arn" {
+  value       = module.alb[*].target_group_arn
   description = "The ARN target of the ALB"
 }
 

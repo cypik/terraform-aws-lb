@@ -64,14 +64,14 @@ data "aws_iam_policy_document" "iam-policy" {
 }
 
 module "ec2" {
-  source                      = "cypik/ec2/aws"
-  version                     = "1.0.5"
-  name                        = "alb"
-  environment                 = local.environment
-  vpc_id                      = module.vpc.vpc_id
-  ssh_allowed_ip              = ["0.0.0.0/0"]
-  ssh_allowed_ports           = [22]
-  public_key                  = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCJj7InzWnvTaPEA0yPXvtO3="
+  source            = "cypik/ec2/aws"
+  version           = "1.0.5"
+  name              = "alb"
+  environment       = local.environment
+  vpc_id            = module.vpc.vpc_id
+  ssh_allowed_ip    = ["0.0.0.0/0"]
+  ssh_allowed_ports = [22]
+  #  public_key                  = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCJj7InzWnvTaPEA0yPXvtO3="
   instance_count              = 1
   ami                         = "ami-044415bb13eee2391"
   instance_type               = "t2.nano"

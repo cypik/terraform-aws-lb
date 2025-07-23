@@ -38,7 +38,7 @@ output "clb_zone_id" {
   description = "The ID of the zone which ALB is provisioned."
 }
 
-output "main_target_group_arn" {
+output "target_group_arn" {
   value       = join("", aws_lb_target_group.main[*].arn)
   description = "The main target group ARN."
 }
