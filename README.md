@@ -191,19 +191,21 @@ Your Name Replace **MIT** and **Cypik** with the appropriate license and your in
 ## License
 This project is licensed under the **MIT** License - see the [LICENSE](https://github.com/cypik/terraform-aws-lb/blob/master/LICENSE) file for details.
 
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.12.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >=5.82.2 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.12.1 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.99.1 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 4.1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >=5.82.2 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.99.1 |
 
 ## Modules
 
@@ -327,11 +329,11 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 | <a name="output_http_tcp_listener_rules"></a> [http\_tcp\_listener\_rules](#output\_http\_tcp\_listener\_rules) | List of listener rules created |
 | <a name="output_https_listener_arn"></a> [https\_listener\_arn](#output\_https\_listener\_arn) | The ARN of the HTTPS listener. |
 | <a name="output_listener_arns"></a> [listener\_arns](#output\_listener\_arns) | A list of all the listener ARNs. |
-| <a name="output_main_target_group_arn"></a> [main\_target\_group\_arn](#output\_main\_target\_group\_arn) | The main target group ARN. |
 | <a name="output_name"></a> [name](#output\_name) | The ARN suffix of the ALB. |
 | <a name="output_security_group_arn"></a> [security\_group\_arn](#output\_security\_group\_arn) | Amazon Resource Name (ARN) of the security group |
 | <a name="output_security_group_id"></a> [security\_group\_id](#output\_security\_group\_id) | ID of the security group |
 | <a name="output_tags"></a> [tags](#output\_tags) | A mapping of tags to assign to the resource. |
+| <a name="output_target_group_arn"></a> [target\_group\_arn](#output\_target\_group\_arn) | The main target group ARN. |
 | <a name="output_target_group_arns"></a> [target\_group\_arns](#output\_target\_group\_arns) | ARNs of the created target groups. |
 | <a name="output_target_group_ids"></a> [target\_group\_ids](#output\_target\_group\_ids) | IDs of the created target groups. |
 | <a name="output_target_group_names"></a> [target\_group\_names](#output\_target\_group\_names) | Names of the created target groups. |

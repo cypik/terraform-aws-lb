@@ -1,5 +1,5 @@
 provider "aws" {
-  region = "us-east-1"
+  region = "eu-west-2"
 }
 
 locals {
@@ -20,7 +20,7 @@ module "subnet" {
   version            = "1.0.5"
   name               = local.name
   environment        = local.environment
-  availability_zones = ["us-east-1b", "us-east-1c"]
+  availability_zones = ["eu-west-2b", "eu-west-2c"]
   type               = "public"
   vpc_id             = module.vpc.vpc_id
   cidr_block         = module.vpc.vpc_cidr_block
@@ -69,14 +69,14 @@ module "ec2" {
   name                        = local.name
   environment                 = local.environment
   instance_count              = 1
-  ami                         = "ami-053b0d53c279acc90"
+  ami                         = "ami-044415bb13eee2391"
   instance_type               = "t2.nano"
   monitoring                  = false
   vpc_id                      = module.vpc.vpc_id
   ssh_allowed_ip              = ["0.0.0.0/0"]
   ssh_allowed_ports           = [22]
   tenancy                     = "default"
-  public_key                  = "ssh-rsaKZ5DaPhQH0Ev6ua9JoMQCkUCUiQlNvHqjhz+Iy4fn3lsvengN7ennSRjPdvhhDRRDRjH+gVk="
+  public_key                  = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCJj7Inz baldev@baldev"
   subnet_ids                  = tolist(module.subnet.public_subnet_id)
   iam_instance_profile        = module.iam-role.name
   assign_eip_address          = true
