@@ -23,7 +23,7 @@ To use this module, you can include it in your Terraform configuration. Here's a
 ```hcl
 module "alb" {
   source                     = "cypik/lb/aws"
-  version                    =  "1.0.3"
+  version                    =  "1.0.2"
   name                       = local.name
   enable                     = true
   internal                   = true
@@ -92,7 +92,7 @@ module "alb" {
 ```hcl
 module "clb" {
   source             = "cypik/lb/aws"
-  version            =  "1.0.3"
+  version            =  "1.0.2"
   name               = "app"
   load_balancer_type = "classic"
   clb_enable         = true
@@ -129,7 +129,7 @@ module "clb" {
 ```hcl
 module "nlb" {
   source                     = "cypik/lb/aws"
-  version                    =  "1.0.3"
+  version                    =  "1.0.2"
   name                       = "app"
   enable                     = true
   internal                   = false
