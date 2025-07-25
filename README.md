@@ -23,7 +23,7 @@ To use this module, you can include it in your Terraform configuration. Here's a
 ```hcl
 module "alb" {
   source                     = "cypik/lb/aws"
-  version                    =  "1.0.2"
+  version                    =  "1.0.3"
   name                       = local.name
   enable                     = true
   internal                   = true
@@ -251,7 +251,7 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 | <a name="input_dns_record_client_routing_policy"></a> [dns\_record\_client\_routing\_policy](#input\_dns\_record\_client\_routing\_policy) | Traffic distribution policy for load balancer availability zones | `string` | `"any_availability_zone"` | no |
 | <a name="input_egress_protocol"></a> [egress\_protocol](#input\_egress\_protocol) | equal to 0. The supported values are defined in the IpProtocol argument on the IpPermission API reference | `number` | `-1` | no |
 | <a name="input_egress_rule"></a> [egress\_rule](#input\_egress\_rule) | Enable to create egress rule | `bool` | `true` | no |
-| <a name="input_enable"></a> [enable](#input\_enable) | If true, create alb. | `bool` | `false` | no |
+| <a name="input_enable"></a> [enable](#input\_enable) | If true, create alb. | `bool` | `true` | no |
 | <a name="input_enable_cross_zone_load_balancing"></a> [enable\_cross\_zone\_load\_balancing](#input\_enable\_cross\_zone\_load\_balancing) | Indicates whether cross zone load balancing should be enabled in application load balancers. | `bool` | `true` | no |
 | <a name="input_enable_deletion_protection"></a> [enable\_deletion\_protection](#input\_enable\_deletion\_protection) | If true, deletion of the load balancer will be disabled via the AWS API. This will prevent Terraform from deleting the load balancer. Defaults to false. | `bool` | `false` | no |
 | <a name="input_enable_http2"></a> [enable\_http2](#input\_enable\_http2) | Indicates whether HTTP/2 is enabled in application load balancers. | `bool` | `true` | no |
@@ -279,7 +279,7 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 | <a name="input_https_port"></a> [https\_port](#input\_https\_port) | The port on which the load balancer is listening. like 80 or 443. | `number` | `443` | no |
 | <a name="input_idle_timeout"></a> [idle\_timeout](#input\_idle\_timeout) | The time in seconds that the connection is allowed to be idle. | `number` | `60` | no |
 | <a name="input_instance_count"></a> [instance\_count](#input\_instance\_count) | The count of instances. | `number` | `0` | no |
-| <a name="input_internal"></a> [internal](#input\_internal) | If true, the LB will be internal. | `string` | `""` | no |
+| <a name="input_internal"></a> [internal](#input\_internal) | If true, the LB will be internal. | `bool` | `false` | no |
 | <a name="input_ip_address_type"></a> [ip\_address\_type](#input\_ip\_address\_type) | The type of IP addresses used by the subnets for your load balancer. The possible values are ipv4 and dualstack. | `string` | `"ipv4"` | no |
 | <a name="input_ipv6_cidr_blocks"></a> [ipv6\_cidr\_blocks](#input\_ipv6\_cidr\_blocks) | Enable to create egress rule | `list(string)` | <pre>[<br>  "::/0"<br>]</pre> | no |
 | <a name="input_is_external"></a> [is\_external](#input\_is\_external) | enable to udated existing security Group | `bool` | `false` | no |

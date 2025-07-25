@@ -41,8 +41,8 @@ variable "instance_count" {
 }
 
 variable "internal" {
-  type        = string
-  default     = ""
+  type        = bool
+  default     = false
   description = "If true, the LB will be internal."
 }
 
@@ -205,7 +205,7 @@ variable "status_code" {
 
 variable "enable" {
   type        = bool
-  default     = false
+  default     = true
   description = "If true, create alb."
 }
 
