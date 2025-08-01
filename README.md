@@ -23,42 +23,43 @@ To use this module, you can include it in your Terraform configuration. Here's a
 ```hcl
 module "alb" {
   source                     = "cypik/lb/aws"
-  version                    =  "1.0.3"
+  version                    =  "1.0.5"
   name                       = local.name
   enable                     = true
   internal                   = true
   load_balancer_type         = "application"
   instance_count             = 1
   subnets                    = module.subnet.public_subnet_id
-  target_id                  = module.ec2.instance_id
+  target_id                  = [module.ec2.instance_id[0]]
   vpc_id                     = module.vpc.vpc_id
   allowed_ip                 = [module.vpc.vpc_cidr_block]
   allowed_ports              = [3306]
   enable_deletion_protection = false
   with_target_group          = true
-  https_enabled              = true
+  https_enabled              = false
   http_enabled               = true
   https_port                 = 443
   listener_type              = "forward"
   target_group_port          = 80
+  http_listener_type         = "forward"
 
   http_tcp_listeners = [
     {
       port               = 80
-      protocol           = "TCP"
+      protocol           = "HTTP"
       target_group_index = 0
     },
   ]
   https_listeners = [
     {
       port               = 443
-      protocol           = "TLS"
+      protocol           = "HTTPS"
       target_group_index = 0
       certificate_arn    = ""
     },
     {
       port               = 84
-      protocol           = "TLS"
+      protocol           = "HTTPS"
       target_group_index = 0
       certificate_arn    = ""
     },
@@ -92,7 +93,7 @@ module "alb" {
 ```hcl
 module "clb" {
   source             = "cypik/lb/aws"
-  version            =  "1.0.2"
+  version            =  "1.0.5"
   name               = "app"
   load_balancer_type = "classic"
   clb_enable         = true
@@ -129,7 +130,7 @@ module "clb" {
 ```hcl
 module "nlb" {
   source                     = "cypik/lb/aws"
-  version                    =  "1.0.2"
+  version                    =  "1.0.5"
   name                       = "app"
   enable                     = true
   internal                   = false
