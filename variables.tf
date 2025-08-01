@@ -193,7 +193,7 @@ variable "load_balancer_update_timeout" {
 
 variable "http_listener_type" {
   type        = string
-  default     = "redirect"
+  default     = "forward"
   description = "The type of routing action. Valid values are forward, redirect, fixed-response, authenticate-cognito and authenticate-oidc."
 }
 

@@ -96,7 +96,7 @@ module "alb" {
   load_balancer_type         = "application"
   instance_count             = 1
   subnets                    = module.subnet.public_subnet_id
-  target_id                  = module.ec2.instance_id
+  target_id                  = [module.ec2.instance_id[0]]
   vpc_id                     = module.vpc.vpc_id
   allowed_ip                 = [module.vpc.vpc_cidr_block]
   allowed_ports              = [3306]
@@ -107,24 +107,25 @@ module "alb" {
   https_port                 = 443
   listener_type              = "forward"
   target_group_port          = 80
+  http_listener_type         = "forward"
 
   http_tcp_listeners = [
     {
       port               = 80
-      protocol           = "TCP"
+      protocol           = "HTTP"
       target_group_index = 0
     },
   ]
   https_listeners = [
     {
       port               = 443
-      protocol           = "TLS"
+      protocol           = "HTTPS"
       target_group_index = 0
       certificate_arn    = ""
     },
     {
       port               = 84
-      protocol           = "TLS"
+      protocol           = "HTTPS"
       target_group_index = 0
       certificate_arn    = ""
     },

@@ -23,42 +23,43 @@ To use this module, you can include it in your Terraform configuration. Here's a
 ```hcl
 module "alb" {
   source                     = "cypik/lb/aws"
-  version                    =  "1.0.3"
+  version                    = "1.0.5"
   name                       = local.name
   enable                     = true
   internal                   = true
   load_balancer_type         = "application"
   instance_count             = 1
   subnets                    = module.subnet.public_subnet_id
-  target_id                  = module.ec2.instance_id
+  target_id                  = [module.ec2.instance_id[0]]
   vpc_id                     = module.vpc.vpc_id
   allowed_ip                 = [module.vpc.vpc_cidr_block]
   allowed_ports              = [3306]
   enable_deletion_protection = false
   with_target_group          = true
-  https_enabled              = true
+  https_enabled              = false
   http_enabled               = true
   https_port                 = 443
   listener_type              = "forward"
   target_group_port          = 80
+  http_listener_type         = "forward"
 
   http_tcp_listeners = [
     {
       port               = 80
-      protocol           = "TCP"
+      protocol           = "HTTP"
       target_group_index = 0
     },
   ]
   https_listeners = [
     {
       port               = 443
-      protocol           = "TLS"
+      protocol           = "HTTPS"
       target_group_index = 0
       certificate_arn    = ""
     },
     {
       port               = 84
-      protocol           = "TLS"
+      protocol           = "HTTPS"
       target_group_index = 0
       certificate_arn    = ""
     },
@@ -92,7 +93,7 @@ module "alb" {
 ```hcl
 module "clb" {
   source             = "cypik/lb/aws"
-  version            =  "1.0.2"
+  version            = "1.0.5"
   name               = "app"
   load_balancer_type = "classic"
   clb_enable         = true
@@ -129,7 +130,7 @@ module "clb" {
 ```hcl
 module "nlb" {
   source                     = "cypik/lb/aws"
-  version                    =  "1.0.2"
+  version                    = "1.0.5"
   name                       = "app"
   enable                     = true
   internal                   = false
@@ -269,7 +270,7 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 | <a name="input_health_check_timeout"></a> [health\_check\_timeout](#input\_health\_check\_timeout) | The time after which a health check is considered failed in seconds. | `number` | `5` | no |
 | <a name="input_health_check_unhealthy_threshold"></a> [health\_check\_unhealthy\_threshold](#input\_health\_check\_unhealthy\_threshold) | The number of failed health checks before an instance is taken out of service. | `number` | `2` | no |
 | <a name="input_http_enabled"></a> [http\_enabled](#input\_http\_enabled) | A boolean flag to enable/disable HTTP listener. | `bool` | `true` | no |
-| <a name="input_http_listener_type"></a> [http\_listener\_type](#input\_http\_listener\_type) | The type of routing action. Valid values are forward, redirect, fixed-response, authenticate-cognito and authenticate-oidc. | `string` | `"redirect"` | no |
+| <a name="input_http_listener_type"></a> [http\_listener\_type](#input\_http\_listener\_type) | The type of routing action. Valid values are forward, redirect, fixed-response, authenticate-cognito and authenticate-oidc. | `string` | `"forward"` | no |
 | <a name="input_http_port"></a> [http\_port](#input\_http\_port) | The port on which the load balancer is listening. like 80 or 443. | `number` | `80` | no |
 | <a name="input_http_tcp_listener_rules"></a> [http\_tcp\_listener\_rules](#input\_http\_tcp\_listener\_rules) | A list of listener rules with actions and conditions | <pre>list(object({<br>    http_tcp_listener_index = number<br>    priority                = optional(number)<br>    actions = list(object({<br>      type               = string<br>      host               = optional(string)<br>      path               = optional(string)<br>      port               = optional(string)<br>      protocol           = optional(string)<br>      query              = optional(string)<br>      status_code        = optional(string)<br>      message_body       = optional(string)<br>      content_type       = optional(string)<br>      target_group_index = optional(number)<br>      target_groups = optional(list(object({<br>        target_group_index = number<br>        weight             = optional(number)<br>      })))<br>      stickiness = optional(object({<br>        enabled  = optional(bool)<br>        duration = optional(number)<br>      }))<br>    }))<br>    conditions = list(object({<br>      path_patterns = optional(list(string))<br>      host_header   = optional(list(string))<br>      http_headers = optional(list(object({<br>        http_header_name = string<br>        values           = list(string)<br>      })))<br>      http_methods = optional(list(string))<br>      query_strings = optional(list(object({<br>        key   = optional(string)<br>        value = string<br>      })))<br>      source_ips = optional(list(string))<br>    }))<br>  }))</pre> | `[]` | no |
 | <a name="input_http_tcp_listeners"></a> [http\_tcp\_listeners](#input\_http\_tcp\_listeners) | A list of maps describing the HTTP listeners or TCP ports for this ALB. Required key/values: port, protocol. Optional key/values: target\_group\_index (defaults to http\_tcp\_listeners[count.index]) | `any` | `[]` | no |
