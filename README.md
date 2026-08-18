@@ -23,7 +23,7 @@ To use this module, you can include it in your Terraform configuration. Here's a
 ```hcl
 module "alb" {
   source                     = "cypik/lb/aws"
-  version                    = "1.0.5"
+  version                    = "1.0.6"
   name                       = local.name
   enable                     = true
   internal                   = true
@@ -93,7 +93,7 @@ module "alb" {
 ```hcl
 module "clb" {
   source             = "cypik/lb/aws"
-  version            = "1.0.5"
+  version            = "1.0.6"
   name               = "app"
   load_balancer_type = "classic"
   clb_enable         = true
@@ -130,7 +130,7 @@ module "clb" {
 ```hcl
 module "nlb" {
   source                     = "cypik/lb/aws"
-  version                    = "1.0.5"
+  version                    = "1.0.6"
   name                       = "app"
   enable                     = true
   internal                   = false
@@ -198,21 +198,21 @@ This project is licensed under the **MIT** License - see the [LICENSE](https://g
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.12.1 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.99.1 |
-| <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 4.1.0 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.15.8 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.58.0 |
+| <a name="requirement_tls"></a> [tls](#requirement\_tls) | >= 4.3.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.99.1 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.58.0 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_labels"></a> [labels](#module\_labels) | cypik/labels/aws | 1.0.2 |
+| <a name="module_labels"></a> [labels](#module\_labels) | cypik/labels/aws | 1.0.4 |
 
 ## Resources
 
